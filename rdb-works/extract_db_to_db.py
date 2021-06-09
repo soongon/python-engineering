@@ -8,5 +8,5 @@ query = 'select * from all_medalists where "NOC" = \'KOR\''
 
 df = pd.read_sql(query, db_engine)
 
-df.to_sql('medalists_kor', db_engine, if_exists='replace')
+df.to_sql('medalists_kor', db_engine, if_exists='replace')  # 932
 print('job ok..')
