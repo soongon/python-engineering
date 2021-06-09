@@ -12,6 +12,6 @@ db_engine = sqlalchemy.create_engine(db_uri)
 df = pd.read_sql(table_name, db_engine)
 
 # df(데이터프레임)을 관계형 DB 특정 테이블에 인서트..
-df.to_sql('users', db_engine)
+df.to_sql('users002', db_engine, if_exists='append', index=False)
 
 print(df.head())
