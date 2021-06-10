@@ -27,20 +27,27 @@ def find_comments_from_mongo(conn):
     ))
 
 
-def insert_to_postgres(engine, comments):
+def insert_to_postgres(engine, df):
     # 파이썬 리스트를 데이터프레임(판다스)으로 변환
-    df = pd.DataFrame(comments)
     df.to_sql('comments_soongon', engine, if_exists='replace')
 
 
 def main():
+
+    # 데이터를 수집 (extract)
     conn = create_connection_mongodb()
     print('connection to mongodb completed..')
     comments_list = find_comments_from_mongo(conn)
     print('mongodb fetch ok..')
+
+    # 데이터를 가공 (transformation)
+    df = pd.DataFrame(comments_list)
+    df['name'] = 'Le'
+
+    # 데이터를 저장 (load)
     db_engine = create_engine_postgresql()
     print('posgtres connection ok..')
-    insert_to_postgres(db_engine, comments_list)
+    insert_to_postgres(db_engine, df)
     print('dump to the postgres ok..')
 
 
