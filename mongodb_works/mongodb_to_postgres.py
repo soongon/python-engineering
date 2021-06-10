@@ -3,6 +3,7 @@
 
 import pymongo
 import sqlalchemy
+import pandas as pd
 
 
 def create_engine_postgresql():
@@ -17,18 +18,30 @@ def create_connection_mongodb():
 
 def find_comments_from_mongo(conn):
     comments = conn.movies_sample.comments
-    return list(comments.find())
+    return list(comments.find(
+        {},
+        {
+            '_id': False,
+            'movie_id': False
+         }
+    ))
 
 
 def insert_to_postgres(engine, comments):
-    print(comments)
+    # 파이썬 리스트를 데이터프레임(판다스)으로 변환
+    df = pd.DataFrame(comments)
+    df.to_sql('comments_soongon', engine, if_exists='replace')
 
 
 def main():
     conn = create_connection_mongodb()
+    print('connection to mongodb completed..')
     comments_list = find_comments_from_mongo(conn)
+    print('mongodb fetch ok..')
     db_engine = create_engine_postgresql()
+    print('posgtres connection ok..')
     insert_to_postgres(db_engine, comments_list)
+    print('dump to the postgres ok..')
 
 
 main()
